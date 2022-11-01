@@ -15,4 +15,9 @@ class MainConverter {
     assert(_binary != null);
     return Converter.bin2dec(_binary!);
   }
+
+  String convertDecimal() {
+    assert(_decimal != null);
+    return Converter.dec2bin(_decimal!);
+  }
 }

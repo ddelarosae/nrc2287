@@ -13,4 +13,9 @@ void main(List<String> arguments) {
     converter.binary = stdin.readLineSync()!;
     print('Decimal: ${converter.convertBinary()}');
   }
+  if (option == 2) {
+    print("Escribe el numero decimal:");
+    converter.decimal = stdin.readLineSync()!;
+    print('Binario: ${converter.convertDecimal()}');
+  }
 }
