@@ -1,37 +1,43 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(
-    MaterialApp(
-      title: 'Hello World App',
+  runApp(MaterialApp(
+      title: 'StatefulWidget example',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Hello World App'),
+          title: const Text('StatefulWidget example'),
         ),
-        body: const ColumnTest(),
-      ),
-    ),
-  );
+        body: const Center(child: Counter()),
+      )));
 }
 
-class ColumnTest extends StatelessWidget {
-  const ColumnTest({Key? key}) : super(key: key);
+class Counter extends StatefulWidget {
+  const Counter({Key? key}) : super(key: key);
+
+  @override
+  _CounterState createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int _counter = 0;
+  void _increment() {
+    setState(() {
+      _counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const Text("Fila1", style: TextStyle(fontSize: 20.0)),
-          Container(
-              color: Colors.blue, child: const Center(child: Text('Fila2'))),
-          Container(
-              color: Colors.red, child: const Center(child: Text('Fila3')))
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ElevatedButton(
+          onPressed: _increment,
+          child: const Text('Increment'),
+        ),
+        Text('Contador: $_counter'),
+      ],
     );
   }
 }
