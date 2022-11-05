@@ -1,62 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: 'Navigation Basics',
-    home: FirstRoute(),
-  ));
+  runApp(const MyApp());
 }
 
-class FirstRoute extends StatelessWidget {
-  const FirstRoute({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('First Route'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SecondRoute()));
-              },
-              icon: const Icon(Icons.change_circle_outlined))
-        ],
-      ),
-      body: Center(
-          child: ElevatedButton(
-              child: const Text('Open route'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SecondRoute()));
-              })),
+    return GetMaterialApp(
+      title: 'Simple GetX navigation',
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/login',
+      getPages: [
+        GetPage(
+            name: '/login',
+            page: () => const Login(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(seconds: 5)),
+        GetPage(
+            name: '/signup',
+            page: () => const SignIn(),
+            transition: Transition.fadeIn),
+        GetPage(
+            name: '/content',
+            page: () => const Content(),
+            transition: Transition.zoom),
+      ],
     );
   }
 }
 
-class SecondRoute extends StatelessWidget {
-  const SecondRoute({Key? key}) : super(key: key);
+class Login extends StatelessWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Second Route"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Go back!'),
-        ),
-      ),
-    );
+        body: SafeArea(
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            child: const Text("Inicio"),
+            onPressed: () {
+              Get.offNamed('/content');
+            },
+          ),
+          TextButton(
+            child: const Text("Create account"),
+            onPressed: () {
+              Get.toNamed('/signup');
+            },
+          )
+        ],
+      )),
+    ));
+  }
+}
+
+class SignIn extends StatelessWidget {
+  const SignIn({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: SafeArea(
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            child: const Text("Create account"),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ],
+      )),
+    ));
+  }
+}
+
+class Content extends StatelessWidget {
+  const Content({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: SafeArea(
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            child: const Text("Logout"),
+            onPressed: () {
+              Get.offNamed('/login');
+            },
+          ),
+        ],
+      )),
+    ));
   }
 }
