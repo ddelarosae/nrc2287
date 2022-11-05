@@ -6,104 +6,43 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Simple GetX navigation',
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
-      getPages: [
-        GetPage(
-            name: '/login',
-            page: () => const Login(),
-            transition: Transition.circularReveal,
-            transitionDuration: const Duration(seconds: 5)),
-        GetPage(
-            name: '/signup',
-            page: () => const SignIn(),
-            transition: Transition.fadeIn),
-        GetPage(
-            name: '/content',
-            page: () => const Content(),
-            transition: Transition.zoom),
-      ],
+      title: 'App con temas',
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
+      home: const MyHomePage(title: 'Primera pagina'),
     );
   }
 }
 
-class Login extends StatelessWidget {
-  const Login({Key? key}) : super(key: key);
-
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-            child: const Text("Inicio"),
-            onPressed: () {
-              Get.offNamed('/content');
-            },
-          ),
-          TextButton(
-            child: const Text("Create account"),
-            onPressed: () {
-              Get.toNamed('/signup');
-            },
-          )
-        ],
-      )),
-    ));
-  }
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class SignIn extends StatelessWidget {
-  const SignIn({Key? key}) : super(key: key);
-
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-            child: const Text("Create account"),
+      appBar: AppBar(title: Text(widget.title), actions: [
+        IconButton(
             onPressed: () {
-              Get.back();
+              Get.isDarkMode
+                  ? Get.changeTheme(ThemeData.light()) //true
+                  : Get.changeTheme(ThemeData.dark()); //false
             },
-          ),
-        ],
-      )),
-    ));
-  }
-}
-
-class Content extends StatelessWidget {
-  const Content({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-            child: const Text("Logout"),
-            onPressed: () {
-              Get.offNamed('/login');
-            },
-          ),
-        ],
-      )),
-    ));
+            icon: const Icon(Icons.light))
+      ]),
+      body: Center(
+          child: Text(
+              Get.isDarkMode ? 'Texto en modo oscuro' : 'Texto en modoClaro',
+              style: Theme.of(context).textTheme.headline3)),
+    );
   }
 }
