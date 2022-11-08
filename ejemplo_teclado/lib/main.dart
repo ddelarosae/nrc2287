@@ -33,10 +33,10 @@ class Teclado extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                /*Image.asset(
+                Image.asset(
                   'assets/images/logo.png',
-                  scale: 12,
-                ),*/
+                  scale: 8,
+                ),
                 const SizedBox(
                   width: 12,
                 ),
