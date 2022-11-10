@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key); //estructura del StatelessWidget
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,13 +19,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Teclado extends StatelessWidget {
-  const Teclado({Key? key}) : super(key: key);
+class Teclado extends StatelessWidget { //esta es
+  const Teclado({Key? key}) : super(key: key); //estructura del StatelessWidget
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
+          FocusManager.instance.primaryFocus
+              ?.unfocus(); //definir el focus de los elementos
         },
         child: Scaffold(
           appBar: AppBar(
@@ -34,7 +35,7 @@ class Teclado extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/logo.png', //importar el logo de la carpeta assets
                   scale: 8,
                 ),
                 const SizedBox(
@@ -50,20 +51,24 @@ class Teclado extends StatelessWidget {
           body: Column(
             children: [
               TextField(
-                decoration: InputDecoration(labelText: "digite un numero"),
+                decoration:
+                    const InputDecoration(labelText: "digite un numero"),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
-              TextField(
+              const TextField(
                 decoration:
                     InputDecoration(labelText: "digite un numero de telefono"),
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.phone, //tipo de teclado telefono
               ),
               TextField(
-                decoration:
-                    InputDecoration(labelText: "digite un numero decimal"),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                    labelText: "digite un numero decimal"),
+                keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true), //tipo de teclado decimal
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly
+                ], //solo digitos
               )
             ],
           ),
