@@ -13,10 +13,10 @@ class Bin2Dec extends StatelessWidget {
               builder: (context, calculator, child) {
                 return Container(
                   padding: const EdgeInsets.all(8.0),
-                  alignment: Alignment.centerRight,
+                  //alignment: Alignment.centerLeft,
                   child: Text(
                     calculator.binary,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.left,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
                   ),
                 );
