@@ -1,75 +1,77 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
-Future<Post> fetchPost() async {
-  var response = await http.get(
-      Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'}));
+import 'dart:convert';
+import 'dart:async';
 
+Future<Album> fetchAlbum() async {
+  final response = await http
+      .get(Uri.parse("https://jsonplaceholder.typicode.com/albums/5"));
   if (response.statusCode == 200) {
-    // Si el servidor devuelve una respuesta OK, parseamos el JSON
-    return Post.fromJson(json.decode(response.body));
+    return Album.fromJson(jsonDecode(response.body));
   } else {
-    // Si esta respuesta no fue OK, lanza un error.
-    throw Exception('Failed to load post');
+    throw Exception('Error al cargar el album');
   }
 }
 
-class Post {
+class Album {
   final int userId;
   final int id;
   final String title;
-  final String body;
 
-  Post(
-      {required this.userId,
-      required this.id,
-      required this.title,
-      required this.body});
+  const Album({
+    required this.userId,
+    required this.id,
+    required this.title,
+  });
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(userId: json["userId"], id: json["id"], title: json["title"]);
   }
 }
 
-void main() => runApp(MyApp(post: fetchPost()));
+/*
+void main() {
+  runApp(const MyApp());
+}
+*/
+void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
-  final Future<Post> post;
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-  MyApp({Key? key, required this.post}) : super(key: key);
+class _MyAppState extends State<MyApp> {
+  late Future<Album> futureAlbum;
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = fetchAlbum();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fetch Data Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Peticion GET HTTP',
+      theme: ThemeData(primarySwatch: Colors.red),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Fetch Data Example'),
+          title: const Text('Peticion GET HTTP'),
         ),
         body: Center(
-          child: FutureBuilder<Post>(
-              future: post,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.title);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-
-                // Por defecto, muestra un loading spinner
-                return CircularProgressIndicator();
-              }),
+          child: FutureBuilder<Album>(
+            future: futureAlbum,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!.title);
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         ),
       ),
     );
