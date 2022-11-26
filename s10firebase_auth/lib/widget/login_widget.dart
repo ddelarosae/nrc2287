@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:s10firebase_auth/main.dart';
 
 class LoginWidget extends StatefulWidget {
-  LoginWidget({super.key});
+  const LoginWidget({super.key});
 
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
@@ -23,40 +23,41 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 60),
-            FlutterLogo(size: 120),
-            SizedBox(height: 20),
-            Text(
-              'Hola \n bienvenido',
+            const SizedBox(height: 60),
+            const FlutterLogo(size: 120),
+            const SizedBox(height: 20),
+            const Text(
+              'Hola \n estas de vuelta',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             TextField(
               controller: emailController,
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             TextField(
               controller: passwordController,
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(labelText: 'Contraseña'),
+              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                minimumSize: Size.fromHeight(50),
+                minimumSize: const Size.fromHeight(50),
               ),
-              icon: Icon(Icons.lock_open, size: 32),
-              label: Text('Entrar a la sesion',
+              icon: const Icon(Icons.lock_open, size: 32),
+              label: const Text('Entrar a la sesion',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              onPressed: () => signIn,
+              //onPressed: () => signIn, AQUI ESTABA EL ERROR 😢
+              onPressed: signIn,
             ),
           ],
         ),
@@ -64,18 +65,16 @@ class _LoginWidgetState extends State<LoginWidget> {
   Future signIn() async {
     showDialog(
       context: context,
-      builder: (context) => Center(child: CircularProgressIndicator()),
+      builder: (context) => const Center(child: CircularProgressIndicator()),
       barrierDismissible: false,
     );
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+          email: emailController.text.trim(),
+          password: passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       print(e);
     }
-    //Navigator.of(context);
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

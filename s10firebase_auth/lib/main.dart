@@ -7,13 +7,13 @@ import 'package:firebase_core/firebase_core.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -23,12 +23,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal)
               .copyWith(secondary: Colors.tealAccent),
         ),
-        home: MainPage(),
+        home: const MainPage(),
       );
 }
 
 class MainPage extends StatelessWidget {
-  MainPage({super.key});
+  const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -36,13 +36,13 @@ class MainPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Hay un error ${snapshot.error}'));
             } else if (snapshot.hasData) {
-              return HomePage();
+              return const HomePage();
             } else {
-              return LoginWidget();
+              return const LoginWidget();
             }
           },
         ),
