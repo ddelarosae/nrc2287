@@ -33,7 +33,9 @@ class HomePage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back, size: 32),
               label: const Text('Salir de la sesion',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              onPressed: () => FirebaseAuth.instance.signOut(),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
             ),
           ],
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:s10firebase_auth/page/home_page.dart';
-import 'package:s10firebase_auth/widget/login_widget.dart';
+import '../page/home_page.dart';
+import '../widget/login_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -39,6 +39,7 @@ class MainPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Hay un error ${snapshot.error}'));
+              //Text('Hay un error ' + (snapshot.error).toString()));
             } else if (snapshot.hasData) {
               return const HomePage();
             } else {

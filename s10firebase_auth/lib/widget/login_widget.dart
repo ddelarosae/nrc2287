@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:s10firebase_auth/main.dart';
+import '../main.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -75,6 +75,7 @@ class _LoginWidgetState extends State<LoginWidget> {
     } on FirebaseAuthException catch (e) {
       print(e);
     }
+    //Navigator.of(context)
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

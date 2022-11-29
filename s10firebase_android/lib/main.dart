@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:s10firebase_android/model/user.dart';
-import 'package:s10firebase_android/page/user_page.dart';
+import '../model/user.dart';
+import '../page/user_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'fire base reed and write',
+      title: 'firebase read and write',
       theme: ThemeData(
         primarySwatch: Colors.brown,
         elevatedButtonTheme: ElevatedButtonThemeData(
