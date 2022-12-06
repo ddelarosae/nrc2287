@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'firebase update and delete',
+      title: 'CRUD NRC2287',
       theme: ThemeData(
         primarySwatch: Colors.brown,
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -47,38 +47,89 @@ class _MyapphomeState extends State<Myapphome> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('Usuarios'),
-          //ElevateButtonIcon: const Icon(Icons.delete)
         ),
-        body: Container(
-          padding: const EdgeInsets.all(32),
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc('my-id');
-                    docUser.update({
-                      'name': 'Henry',
-                    });
-                    docUser.update({
-                      'city.name': 'Bogota',
-                    });
-                  },
-                  child: const Text('Update')),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                  onPressed: () {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc('my-id');
-                    docUser.delete();
-                  },
-                  child: const Text('Delete'))
-            ],
-          ),
+        body: buildUsers(),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add_box_outlined),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const UserPage(),
+              ),
+            );
+          },
         ),
       );
+
+  Widget buildUsers() => StreamBuilder<List<User>>(
+      stream: readUsers(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('hay error ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          final users = snapshot.data!;
+          return ListView(
+            children: users.map(buildUser).toList(),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      });
+
+  Widget buildSingleUser() => FutureBuilder<User?>(
+        future: readUser(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('hay error ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            final user = snapshot.data;
+            return user == null
+                ? const Center(child: Text('No hay usuario'))
+                : buildUser(user);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      );
+  // widget que nos muestra una especie de cuadro con la edad y titulo y un subtitulo
+  Widget buildUser(User user) => ListTile(
+        // quiero que se me muestre dentro de un circulo la edad
+        leading: CircleAvatar(child: Text('${user.age}')),
+        title: Text(user.name),
+        // para mostrar fechas utilizamos toIso8601String()
+        subtitle: Text(user.birthday.toIso8601String()),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => UserPage(user: user),
+        )),
+      );
+
+// esto sirve para extraer los archivos en un json de firebase
+  Stream<List<User>> readUsers() => FirebaseFirestore.instance
+      .collection('users')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => User.fromJson(doc.data())).toList());
+
+  Future<User?> readUser() async {
+    final docUser = FirebaseFirestore.instance.collection('users').doc('my-id');
+    final snapshot = await docUser.get();
+
+    if (snapshot.exists) {
+      return User.fromJson(snapshot.data()!);
+    }
+    //return null;
+  }
+
+  Future createUser({required String name}) async {
+    final docUser = FirebaseFirestore.instance.collection('users').doc();
+
+    final json = {
+      'id': docUser.id,
+      'name': name,
+      'age': 28,
+      'birthday': DateTime(2022, 11, 24),
+    };
+
+    await docUser.set(json);
+  }
 }

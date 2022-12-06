@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield_new.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+  final User? user;
+  const UserPage({super.key, this.user});
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -24,6 +25,14 @@ class _UserPageState extends State<UserPage> {
     controllerName = TextEditingController();
     controllerAge = TextEditingController();
     controllerDate = TextEditingController();
+
+    if (widget.user != null) {
+      final user = widget.user!;
+
+      controllerAge.text = user.age.toString();
+      controllerName.text = user.name;
+      controllerDate.text = DateFormat('yyyy-MM-dd').format(user.birthday);
+    }
   }
 
   @override
@@ -35,77 +44,104 @@ class _UserPageState extends State<UserPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('agregar usuario'),
-        ),
-        body: Form(
-            key: formKey,
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: <Widget>[
-                TextFormField(
-                  controller: controllerName,
-                  decoration: decoration('nombre'),
-                  validator: (text) =>
-                      text != null && text.isEmpty ? 'entrada no valida' : null,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFormField(
-                  controller: controllerAge,
-                  decoration: decoration('Edad'),
-                  validator: (text) =>
-                      text != null && int.tryParse(text) == null
-                          ? 'entrada no valida'
-                          : null,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                DateTimeField(
-                  controller: controllerDate,
-                  decoration: decoration('fecha de nacimiento'),
-                  validator: (datetime) =>
-                      datetime == null ? 'entrada no valida' : null,
-                  format: DateFormat('yyyy-MM-dd'),
-                  onShowPicker: (context, currentValue) => showDatePicker(
-                      context: context,
-                      firstDate: DateTime(1950),
-                      initialDate: currentValue ?? DateTime.now(),
-                      lastDate: DateTime(2100)),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      final isValid = formKey.currentState!.validate();
-                      if (isValid) {
-                        final user = User(
-                          name: controllerName.text,
-                          age: int.parse(controllerAge.text),
-                          birthday: DateTime.parse(controllerDate.text),
-                        );
+  Widget build(BuildContext context) {
+    final isEditing = widget.user != null;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(isEditing ? controllerName.text : 'Agregar usuario'),
+        actions: [
+          if (isEditing)
+            IconButton(
+                onPressed: () {
+                  deleteUser(widget.user!);
+                  final snackBar = SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text(
+                      'El usuario ${controllerName.text} ha sido eliminado',
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.delete))
+        ],
+      ),
+      body: Form(
+          key: formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: <Widget>[
+              TextFormField(
+                controller: controllerName,
+                decoration: decoration('nombre'),
+                validator: (text) =>
+                    text != null && text.isEmpty ? 'entrada no valida' : null,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              TextFormField(
+                controller: controllerAge,
+                decoration: decoration('Edad'),
+                validator: (text) => text != null && int.tryParse(text) == null
+                    ? 'entrada no valida'
+                    : null,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              DateTimeField(
+                initialValue: widget.user?.birthday,
+                controller: controllerDate,
+                decoration: decoration('fecha de nacimiento'),
+                validator: (datetime) =>
+                    datetime == null ? 'entrada no valida' : null,
+                format: DateFormat('yyyy-MM-dd'),
+                onShowPicker: (context, currentValue) => showDatePicker(
+                    context: context,
+                    firstDate: DateTime(1950),
+                    initialDate: currentValue ?? DateTime.now(),
+                    lastDate: DateTime(2100)),
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              ElevatedButton(
+                child: Text(isEditing ? 'Guardar' : 'Crear'),
+                onPressed: () {
+                  final isValid = formKey.currentState!.validate();
+                  if (isValid) {
+                    final user = User(
+                      id: widget.user?.id ?? '',
+                      name: controllerName.text,
+                      age: int.parse(controllerAge.text),
+                      birthday: DateTime.parse(controllerDate.text),
+                    );
 
-                        createUser(user);
+                    if (isEditing) {
+                      updateUser(user);
+                    } else {
+                      createUser(user);
+                    }
+                    final action = isEditing ? 'Editado' : 'Agregado';
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.amber,
+                      content: Text(
+                          'El ${controllerName.text} ha sido $action a Firebase',
+                          style: const TextStyle(fontSize: 24)),
+                    );
 
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.amber,
-                          content: Text(
-                              '${controllerName.text} se agrego a firebase',
-                              style: const TextStyle(fontSize: 24)),
-                        );
-
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text('enviar'))
-              ],
-            )),
-      );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    Navigator.pop(context);
+                  }
+                },
+                // child: const Text('enviar')
+              ),
+            ],
+          )),
+    );
+  }
 
   InputDecoration decoration(String label) => InputDecoration(
         labelText: label,
